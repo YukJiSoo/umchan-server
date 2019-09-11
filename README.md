@@ -1,5 +1,5 @@
 # UMCHAN-Server
-움찬러너 REST API Server repository
+움찬러너 API Server repository
 
 ## Development Enviroment
 #### npm v6.10.1
