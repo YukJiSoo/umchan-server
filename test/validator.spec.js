@@ -186,3 +186,31 @@ test('nickname 유효성 검증 - #3 fail 중복된 별명 ', async () => {
         expect(error.message).toBe(ERR_MESSAGE.NICKNAME_DUPLICATION);
     }
 });
+
+test('location 유효성 검증 - #1 success ', () => {
+    // given
+    const location = {
+        latitude: 10.2,
+        longitude: 20,
+    };
+
+    // when
+    const result = validator.location(location);
+
+    // then
+    expect(result.success).toBe(true);
+});
+
+test('location 유효성 검증 - #2 fail 숫자가 아님 ', () => {
+    // given
+    const location = {
+        latitude: undefined,
+        longitude: null,
+    };
+
+    // when
+    const result = validator.location(location);
+
+    // then
+    expect(result.message).toBe(ERR_MESSAGE.LOCATION_NOT_NUMBER);
+});

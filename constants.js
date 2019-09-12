@@ -14,4 +14,5 @@ define('ERR_MESSAGE', {
     NAME_FORMAT: '잘못된 이름 형식입니다',
     NICKNAME_FORMAT: '잘못된 별명 형식입니다',
     NICKNAME_DUPLICATION: '중복된 별명입니다',
+    LOCATION_NOT_NUMBER: '위치 값이 잘못됬습니다',
 });
