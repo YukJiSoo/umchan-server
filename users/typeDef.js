@@ -4,20 +4,17 @@ const typeDef = gql`
 
     type User {
         id: ID!
-        name: String
-        nickname: String
-        imagePath: String
-        location: String
+        name: String!
+        nickname: String!
+        imagePath: String!
+        location: Location!
     }
 
     extend type Query {
-        user(id: ID!): User
-        users: [User]
     }
 
     extend type Mutation {
         register(user: RegisterUserInput): RegisterUserMutationResponse
-        updateUser(user: UpdateUserInput): UpdateUserMutationResponse
     }
     
     "Input"
@@ -30,29 +27,12 @@ const typeDef = gql`
         location: String!
     }
 
-    input UpdateUserInput {
-        token: String!
-        id: ID!
-        password: String
-        nickName: String
-        imagePath: String
-        location: String
-    }
-
     "Response"
     type RegisterUserMutationResponse implements MutationResponse {
         code: String!
         success: Boolean!
         message: String!
-        token: String
-        user: User
-    }
-
-    type UpdateUserMutationResponse implements MutationResponse {
-        code: String!
-        success: Boolean!
-        message: String!
-        user: User!
+        token: String!
     }
 `;
 
