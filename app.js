@@ -3,6 +3,9 @@ const PORT = 3030;
 const express = require('express');
 const { ApolloServer, gql } = require('apollo-server-express');
 
+const users = require('./users');
+const common = require('./util/commonTypeDef');
+
 const app = express();
 
 const tests = [
@@ -31,7 +34,7 @@ const resolvers = {
 };
 
 const server = new ApolloServer({
-    typeDefs: [typeDefs],
+    typeDefs: [typeDefs, users.typeDef, common.typeDef],
     resolvers: [resolvers],
 
     formatError: (error) => error,
