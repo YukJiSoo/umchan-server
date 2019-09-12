@@ -38,5 +38,22 @@ class DBManager {
 
         return query.set(data);
     }
+
+    async update({ collection, doc, data }) {
+        // check doc exist
+        try {
+            if (doc) {
+                const snapshot = await this.read({ collection, doc });
+                if (!snapshot.exists) throw new Error('Is not exist doc');
+            }
+        } catch (error) {
+            return new Promise((reject) => reject(error.message));
+        }
+
+        let query = this.db.collection(collection);
+        query = doc ? query.doc(doc) : query.doc();
+
+        return query.update(data);
+    }
 }
 module.exports = new DBManager();
