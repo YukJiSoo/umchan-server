@@ -8,6 +8,11 @@ const typeDef = gql`
         longitude: Float!
     }
 
+    input LocationInput {
+        latitude: Float!
+        longitude: Float!
+    }
+
     "Response"
     interface MutationResponse {
         code: String!

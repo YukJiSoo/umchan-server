@@ -19,9 +19,8 @@ const typeDef = gql`
         email: String!
         password: String!
         name: String!
-        nickName: String!
-        imagePath: String!
-        location: String!
+        nickname: String!
+        location: LocationInput!
     }
 
     "Response"
@@ -29,7 +28,7 @@ const typeDef = gql`
         code: String!
         success: Boolean!
         message: String!
-        token: String!
+        token: String
     }
 `;
 

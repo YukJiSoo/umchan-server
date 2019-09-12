@@ -1,4 +1,4 @@
-process.setMaxListeners(15);
+process.setMaxListeners(20);
 
 const PORT = 3030;
 

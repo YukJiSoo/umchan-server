@@ -30,7 +30,7 @@ class DBManager {
                 if (snapshot.exists) throw new Error('Is already exist doc');
             }
         } catch (error) {
-            return new Promise((reject) => reject(error.message));
+            return new Promise((_, reject) => reject(error.message));
         }
 
         let query = this.db.collection(collection);
@@ -47,7 +47,7 @@ class DBManager {
                 if (!snapshot.exists) throw new Error('Is not exist doc');
             }
         } catch (error) {
-            return new Promise((reject) => reject(error.message));
+            return new Promise((_, reject) => reject(error.message));
         }
 
         let query = this.db.collection(collection);
@@ -64,7 +64,7 @@ class DBManager {
                 if (!snapshot.exists) throw new Error('Is not exist doc');
             }
         } catch (error) {
-            return new Promise((reject) => reject(error.message));
+            return new Promise((_, reject) => reject(error.message));
         }
 
         const query = this.db.collection(collection).doc(doc);
