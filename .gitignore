@@ -1,4 +1,7 @@
 node_modules
 .eslintignore
+
+# secret key info
 firebase-service-account-key.json
 password-encrypto.js
+secret-config.json
