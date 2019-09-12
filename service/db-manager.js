@@ -21,5 +21,22 @@ class DBManager {
 
         return query.get();
     }
+
+    async create({ collection, doc, data }) {
+        // check doc exist
+        try {
+            if (doc) {
+                const snapshot = await this.read({ collection, doc });
+                if (snapshot.exists) throw new Error('Is already exist doc');
+            }
+        } catch (error) {
+            return new Promise((reject) => reject(error.message));
+        }
+
+        let query = this.db.collection(collection);
+        query = doc ? query.doc(doc) : query.doc();
+
+        return query.set(data);
+    }
 }
 module.exports = new DBManager();
