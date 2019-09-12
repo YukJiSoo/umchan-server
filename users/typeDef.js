@@ -9,10 +9,7 @@ const typeDef = gql`
         imagePath: String!
         location: Location!
     }
-
-    extend type Query {
-    }
-
+    
     extend type Mutation {
         register(user: RegisterUserInput): RegisterUserMutationResponse
     }

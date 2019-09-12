@@ -3,46 +3,23 @@ process.setMaxListeners(15);
 const PORT = 3030;
 
 const express = require('express');
-const { ApolloServer, gql } = require('apollo-server-express');
+const { ApolloServer } = require('apollo-server-express');
+
+const DBManager = require('./service/db-manager');
 
 const users = require('./users');
 const accounts = require('./accounts');
-const common = require('./util/commonTypeDef');
+const base = require('./base');
 
 const app = express();
 
-const tests = [
-    {
-        content: 'graphql',
-    },
-    {
-        content: 'express',
-    },
-];
-
-const typeDefs = gql`
-    type Test {
-        content: String
-    }
-
-    type Query {
-        tests: [Test]
-    }
-`;
-
-const resolvers = {
-    Query: {
-        tests: () => tests,
-    },
-};
-
 const server = new ApolloServer({
-    typeDefs: [typeDefs, users.typeDef, common.typeDef, accounts.typeDef],
-    resolvers: [resolvers],
+    typeDefs: [base.typeDef, users.typeDef, accounts.typeDef],
+    resolvers: [users.resolvers],
 
     formatError: (error) => error,
 
-    context: ({ req, res }) => ({ req, res }),
+    context: ({ req, res }) => ({ req, res, DBManager }),
 });
 
 server.applyMiddleware({ app, path: '/graphql' });
