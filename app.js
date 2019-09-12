@@ -1,9 +1,12 @@
+process.setMaxListeners(15);
+
 const PORT = 3030;
 
 const express = require('express');
 const { ApolloServer, gql } = require('apollo-server-express');
 
 const users = require('./users');
+const accounts = require('./accounts');
 const common = require('./util/commonTypeDef');
 
 const app = express();
@@ -34,7 +37,7 @@ const resolvers = {
 };
 
 const server = new ApolloServer({
-    typeDefs: [typeDefs, users.typeDef, common.typeDef],
+    typeDefs: [typeDefs, users.typeDef, common.typeDef, accounts.typeDef],
     resolvers: [resolvers],
 
     formatError: (error) => error,
