@@ -17,7 +17,7 @@ const typeDef = gql`
         users: [User]
     }
 
-    type Mutation {
+    extend type Mutation {
         register(user: RegisterUserInput): RegisterUserMutationResponse
         updateUser(user: UpdateUserInput): UpdateUserMutationResponse
     }
