@@ -145,3 +145,44 @@ test('name 유효성 검증 - #4 fail 한글 이름은 2자이상 17자 이하',
     // then
     expect(result.success).toBe(true);
 });
+
+test('nickname 유효성 검증 - #1 success ', async () => {
+    // given
+    const nickname = '테스트';
+
+    try {
+        // when
+        const result = await validator.nickname(nickname);
+
+        // then
+        expect(result.success).toBe(true);
+    } catch (error) {
+        console.log('Error validate nickname', error);
+    }
+});
+
+test('nickname 유효성 검증 - #2 fail 잘못된 형식 ', async () => {
+    // given
+    const nickname = '';
+
+    try {
+        // when
+        await validator.nickname(nickname);
+    } catch (error) {
+        // then
+        expect(error.message).toBe(ERR_MESSAGE.NICKNAME_FORMAT);
+    }
+});
+
+test('nickname 유효성 검증 - #3 fail 중복된 별명 ', async () => {
+    // given
+    const nickname = '테스트';
+
+    try {
+        // when
+        await validator.nickname(nickname);
+    } catch (error) {
+        // then
+        expect(error.message).toBe(ERR_MESSAGE.NICKNAME_DUPLICATION);
+    }
+});

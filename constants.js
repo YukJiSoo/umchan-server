@@ -11,4 +11,7 @@ define('ERR_MESSAGE', {
     PASSWORD_ALPHA: '영문을 최소 1자이상 포함해주세요',
     PASSWORD_NUMBER: '숫자를 최소 1자 이상 포함해주세요',
     PASSWORD_SPECIAL_CHAR: '특수문자를 최소 1자 이상 포함해주세요',
+    NAME_FORMAT: '잘못된 이름 형식입니다',
+    NICKNAME_FORMAT: '잘못된 별명 형식입니다',
+    NICKNAME_DUPLICATION: '중복된 별명입니다',
 });
