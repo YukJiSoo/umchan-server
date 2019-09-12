@@ -46,15 +46,15 @@ const typeDef = gql`
         code: String!
         success: Boolean!
         message: String!
-        token: String
-        user: User
+        token: String!
+        user: User!
     }
 
     type UpdateUserMutationResponse implements MutationResponse {
         code: String!
         success: Boolean!
         message: String!
-        user: User
+        user: User!
     }
 `;
 
