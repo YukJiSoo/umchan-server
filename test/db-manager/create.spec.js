@@ -42,3 +42,11 @@ test('DBManager 특정 collection에 doc 추가 - ID 미지정', async () => {
         console.log('Error create doc', error);
     }
 });
+
+test('DBManager 추가하려는 doc id 가 이미 존재하는 경우', async () => {
+    // given
+    const doc = 'case';
+    const data = { number: 1 };
+
+    expect(() => DBManager.create({ collection, doc, data }).toThrow('Is already exist doc id'));
+});
