@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 const validator = require('../util/validators');
-const { ERR_MESSAGE } = require('../constants');
+const { ERROR } = require('../constants');
 
 test('email 유효성 검증 - #1 equal', async () => {
     // given
@@ -55,7 +55,7 @@ test('password 유효성 검증 - #2 fail 길이제한', async () => {
     const result = validator.password(password);
 
     // then
-    expect(result.message).toBe(ERR_MESSAGE.PASSWORD_LENGTH);
+    expect(result.error).toEqual(ERROR.PASSWORD_LENGTH);
 });
 
 test('password 유효성 검증 - #3 fail 영문 최소 1개 포함', async () => {
@@ -66,7 +66,7 @@ test('password 유효성 검증 - #3 fail 영문 최소 1개 포함', async () =
     const result = validator.password(password);
 
     // then
-    expect(result.message).toBe(ERR_MESSAGE.PASSWORD_ALPHA);
+    expect(result.error).toEqual(ERROR.PASSWORD_ALPHA);
 });
 
 test('password 유효성 검증 - #4 fail 숫자 최소 1개 포함', async () => {
@@ -77,7 +77,7 @@ test('password 유효성 검증 - #4 fail 숫자 최소 1개 포함', async () =
     const result = validator.password(password);
 
     // then
-    expect(result.message).toBe(ERR_MESSAGE.PASSWORD_NUMBER);
+    expect(result.error).toEqual(ERROR.PASSWORD_NUMBER);
 });
 
 test('password 유효성 검증 - #5 fail 특수문자 최소 1개 포함', async () => {
@@ -88,7 +88,7 @@ test('password 유효성 검증 - #5 fail 특수문자 최소 1개 포함', asyn
     const result = validator.password(password);
 
     // then
-    expect(result.message).toBe(ERR_MESSAGE.PASSWORD_SPECIAL_CHAR);
+    expect(result.error).toEqual(ERROR.PASSWORD_SPECIAL_CHAR);
 });
 
 test('name 유효성 검증 - #1 success ', async () => {
@@ -110,7 +110,7 @@ test('name 유효성 검증 - #2 fail 영어 이름은 성이랑 이름사이 �
     const result = validator.name(name);
 
     // then
-    expect(result.message).toBe(ERR_MESSAGE.NAME_FORMAT);
+    expect(result.error).toEqual(ERROR.NAME_FORMAT);
 });
 
 test('name 유효성 검증 - #3 success 영어 이름은 성이랑 이름사이 띄어쓰기 ', async () => {
@@ -132,7 +132,7 @@ test('name 유효성 검증 - #4 fail 한글 이름은 2자이상 17자 이하',
     const result = validator.name(name);
 
     // then
-    expect(result.message).toBe(ERR_MESSAGE.NAME_FORMAT);
+    expect(result.error).toEqual(ERROR.NAME_FORMAT);
 });
 
 test('name 유효성 검증 - #4 fail 한글 이름은 2자이상 17자 이하', async () => {
@@ -170,7 +170,7 @@ test('nickname 유효성 검증 - #2 fail 잘못된 형식 ', async () => {
         await validator.nickname(nickname);
     } catch (error) {
         // then
-        expect(error.message).toBe(ERR_MESSAGE.NICKNAME_FORMAT);
+        expect(error.error).toEqual(ERROR.NICKNAME_FORMAT);
     }
 });
 
@@ -183,7 +183,7 @@ test('nickname 유효성 검증 - #3 fail 중복된 별명 ', async () => {
         await validator.nickname(nickname);
     } catch (error) {
         // then
-        expect(error.message).toBe(ERR_MESSAGE.NICKNAME_DUPLICATION);
+        expect(error.error).toEqual(ERROR.NICKNAME_DUPLICATION);
     }
 });
 
@@ -212,5 +212,5 @@ test('location 유효성 검증 - #2 fail 숫자가 아님 ', () => {
     const result = validator.location(location);
 
     // then
-    expect(result.message).toBe(ERR_MESSAGE.LOCATION_NOT_NUMBER);
+    expect(result.error).toEqual(ERROR.LOCATION_NOT_NUMBER);
 });
