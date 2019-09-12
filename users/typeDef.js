@@ -4,10 +4,8 @@ const typeDef = gql`
 
     type User {
         id: ID!
-        email: String
-        password: String
         name: String
-        nickName: String
+        nickname: String
         imagePath: String
         location: String
     }
@@ -46,8 +44,8 @@ const typeDef = gql`
         code: String!
         success: Boolean!
         message: String!
-        token: String!
-        user: User!
+        token: String
+        user: User
     }
 
     type UpdateUserMutationResponse implements MutationResponse {

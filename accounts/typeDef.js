@@ -6,6 +6,7 @@ const typeDef = gql`
         id: ID!
         email: String!
         password: String!
+        salt: String!
     }
 
     extend type Query {
