@@ -9,7 +9,7 @@ const typeDef = gql`
         salt: String!
     }
 
-    extend type Query {
+    extend type Mutation {
         login(account: LoginInput!): LoginMutationResponse
     }
 
@@ -24,8 +24,8 @@ const typeDef = gql`
         code: String!
         success: Boolean!
         message: String!
-        token: String!
-        user: User!
+        token: String
+        user: User
     }
 `;
 

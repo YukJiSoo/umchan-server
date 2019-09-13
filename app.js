@@ -15,7 +15,7 @@ const app = express();
 
 const server = new ApolloServer({
     typeDefs: [base.typeDef, users.typeDef, accounts.typeDef],
-    resolvers: [users.resolvers],
+    resolvers: [users.resolvers, accounts.resolvers],
 
     formatError: (error) => error,
 

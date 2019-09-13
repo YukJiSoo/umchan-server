@@ -1,14 +1,12 @@
 const validators = require('../util/validators');
 const uuid = require('../util/uuid-creator');
-const passwordEncrypto = require('../util/password-encrypto');
+const { encrypto } = require('../util/password-encrypto');
 const jwtManager = require('../util/jwt-manager');
 
 const USERS_COLLECTION = 'users';
 const ACCOUNTS_COLLECTION = 'accounts';
 
 const resolvers = {
-    Query: {
-    },
     Mutation: {
         async register(_, args, context) {
             const { email, password, name, nickname, location } = args.user;
@@ -19,7 +17,7 @@ const resolvers = {
 
                 // create
                 const id = uuid();
-                const { passwordKey, salt } = await passwordEncrypto(password);
+                const { passwordKey, salt } = await encrypto(password);
                 const token = await jwtManager.tokenCreator({ id });
 
                 await context.DBManager.batch(
