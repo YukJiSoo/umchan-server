@@ -12,7 +12,7 @@ module.exports.isNicknameDuplicate = async (nickname) => {
         const whereClause = { field: 'nickname', operator: '==', value: nickname };
         const snapshot = await DBManager.read({ collection: 'users' }, [whereClause]);
 
-        if (snapshot.docs) throw ERROR.NICKNAME_DUPLICATION;
+        if (!snapshot.empty) throw ERROR.NICKNAME_DUPLICATION;
         return new Promise((resolve) => resolve());
     } catch (error) {
         console.error(`err: validator/nickname.js - isNicknameDuplicate method ${error.MESSAGE}`);

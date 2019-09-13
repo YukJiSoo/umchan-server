@@ -12,8 +12,8 @@ module.exports.isEmailDuplicate = async (email) => {
     try {
         const whereClause = { field: 'email', operator: '==', value: email };
         const snapshot = await DBManager.read({ collection: 'accounts' }, [whereClause]);
-
-        if (snapshot.docs) throw ERROR.EMAIL_DUPLICATION;
+        
+        if (!snapshot.empty) throw ERROR.EMAIL_DUPLICATION;
         return new Promise((resolve) => resolve());
     } catch (error) {
         console.error(`err: validator/email.js - isEmailDuplicate method ${error.MESSAGE}`);
