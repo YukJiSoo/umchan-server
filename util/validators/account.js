@@ -10,20 +10,23 @@ module.exports.email = (email) => {
 };
 
 module.exports.isAccountMatch = async (account) => {
+    const { email, password } = account;
+
     try {
         // check email exist
-        const whereClause = { field: 'email', operator: '==', value: account.email };
+        const whereClause = { field: 'email', operator: '==', value: email };
         const snapshot = await DBManager.read({ collection: 'accounts' }, [whereClause]);
 
         if (snapshot.empty) throw ERROR.ACCOUNT_NO_MATCH_EMAIL;
 
         // check correct password
-        const { salt } = snapshot.docs[0].data();
-        const isPasswordValidate = await checkCorrectPassword(account.password, salt);
-        if (!isPasswordValidate) throw ERROR.ACCOUNT_NO_MATCH_PASSWORD;
+        const { passwordKey, salt, id } = snapshot.docs[0].data();
+        const isPasswordValidate = await checkCorrectPassword(password, passwordKey, salt);
 
-        return new Promise((resolve) => resolve());
+        if (!isPasswordValidate) throw ERROR.ACCOUNT_NO_MATCH_PASSWORD;
+        return new Promise((resolve) => resolve(id));
     } catch (error) {
+        console.error(error);
         console.error(`err: validator/email.js - isEmailDuplicate method ${error.MESSAGE}`);
         return new Promise((_, reject) => reject(error));
     }

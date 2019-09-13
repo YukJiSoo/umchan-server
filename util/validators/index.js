@@ -40,7 +40,7 @@ const loginValidate = async (account) => {
 
     try {
         // check account duplicate
-        await isAccountMatch(account);
+        const id = await isAccountMatch(account);
 
         fieldsNeedToValidate.forEach(async (field) => {
             const { validator, value } = field;
@@ -49,7 +49,7 @@ const loginValidate = async (account) => {
             if (!result.success) throw result.error;
         });
 
-        return new Promise((resolve) => resolve());
+        return new Promise((resolve) => resolve(id));
     } catch (error) {
         return new Promise((_, reject) => reject(error));
     }
