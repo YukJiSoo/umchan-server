@@ -22,28 +22,31 @@ const resolvers = {
                 const { passwordKey, salt } = await passwordEncrypto(password);
                 const token = await jwtManager.tokenCreator({ id });
 
-                await context.DBManager.create({
-                    collection: USERS_COLLECTION,
-                    doc: id,
-                    data: {
-                        id,
-                        name,
-                        nickname,
-                        imagePath: `baseurl(todo)${id}`,
-                        location,
+                await context.DBManager.batch(
+                    {
+                        method: 'create',
+                        collection: USERS_COLLECTION,
+                        doc: id,
+                        data: {
+                            id,
+                            name,
+                            nickname,
+                            imagePath: `baseurl(todo)${id}`,
+                            location,
+                        },
                     },
-                });
-
-                await context.DBManager.create({
-                    collection: ACCOUNTS_COLLECTION,
-                    doc: id,
-                    data: {
-                        id,
-                        email,
-                        passwordKey,
-                        salt,
+                    {
+                        method: 'create',
+                        collection: ACCOUNTS_COLLECTION,
+                        doc: id,
+                        data: {
+                            id,
+                            email,
+                            passwordKey,
+                            salt,
+                        },
                     },
-                });
+                );
 
                 return {
                     code: 201,

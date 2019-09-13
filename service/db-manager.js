@@ -71,5 +71,32 @@ class DBManager {
 
         return query.delete();
     }
+
+    async batch(...jobs) {
+        const batch = this.db.batch();
+
+        jobs.forEach((job) => {
+            let query = this.db.collection(job.collection);
+            query = job.doc ? query.doc(job.doc) : query.doc();
+
+            switch (job.method) {
+            case 'create':
+                batch.set(query, job.data);
+                break;
+            case 'update':
+                batch.update(query, job.data);
+                break;
+            case 'delete':
+                batch.set(query);
+                break;
+            default:
+                console.log('err: uncorrect method');
+                break;
+            }
+        });
+
+        return batch.commit().catch((error) => { throw error; });
+    }
 }
+
 module.exports = new DBManager();
