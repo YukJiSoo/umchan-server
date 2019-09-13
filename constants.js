@@ -46,4 +46,12 @@ define('ERROR', {
         CODE: 403,
         MESSAGE: '위치 값이 잘못됬습니다',
     },
+    ACCOUNT_NO_MATCH_EMAIL: {
+        CODE: 403,
+        MESSAGE: '존재하지 않는 email입니다',
+    },
+    ACCOUNT_NO_MATCH_PASSWORD: {
+        CODE: 403,
+        MESSAGE: '비밀번호가 일치하지 않습니다',
+    },
 });
