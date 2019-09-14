@@ -105,6 +105,13 @@ class DBManager {
             case 'update':
                 batch.update(query, job.data);
                 break;
+            case 'updateArrayField': {
+                const data = {};
+                data[`${job.key}`] = admin.firestore.FieldValue.arrayUnion(job.value);
+
+                batch.update(query, data);
+                break;
+            }
             case 'delete':
                 batch.set(query);
                 break;
