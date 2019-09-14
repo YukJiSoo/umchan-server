@@ -36,7 +36,7 @@ class DBManager {
         let query = this.db.collection(collection);
         query = doc ? query.doc(doc) : query.doc();
 
-        return query.set(data);
+        return query.set(data, { merge: true });
     }
 
     async update({ collection, doc, data }) {
@@ -53,6 +53,25 @@ class DBManager {
         let query = this.db.collection(collection);
         query = doc ? query.doc(doc) : query.doc();
 
+        return query.update(data);
+    }
+
+    async updateArrayField({ collection, doc, key, value }) {
+        // check doc exist
+        try {
+            if (doc) {
+                const snapshot = await this.read({ collection, doc });
+                if (!snapshot.exists) throw new Error('Is not exist doc');
+            }
+        } catch (error) {
+            return new Promise((_, reject) => reject(error.message));
+        }
+
+        if (doc === undefined) return new Promise((_, reject) => reject("doc id undefined"));
+
+        const query = this.db.collection(collection).doc(doc);
+        const data = {};
+        data[`${key}`] = admin.firestore.FieldValue.arrayUnion(value);
         return query.update(data);
     }
 
@@ -81,7 +100,7 @@ class DBManager {
 
             switch (job.method) {
             case 'create':
-                batch.set(query, job.data);
+                batch.set(query, job.data, { merge: true });
                 break;
             case 'update':
                 batch.update(query, job.data);
