@@ -11,8 +11,17 @@ module.exports.tokenCreator = (data) => new Promise((resolve, reject) => {
         });
 });
 
+module.exports.isTokenValid = (token) => {
+    try {
+        const decoded = jwt.verify(token, TOKEN_SECRET_KEY);
+        return decoded;
+    } catch (err) {
+        console.log(err);
+        return undefined;
+    }
+};
 // module.exports.isTokenValid = (token, callback) => {
-//     jwt.verify(token, TOKEN_SECRET, (err, decode) => {
+//     jwt.verify(token, TOKEN_SECRET_KEY, (err, decode) => {
 //         if (err) {
 //             // console.log("=========Token Helper: Can't decode token")
 //             callback({isValid: false});
