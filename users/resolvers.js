@@ -1,6 +1,6 @@
 const validators = require('../util/validators');
 const uuid = require('../util/uuid-creator');
-const { encrypto } = require('../util/password-encrypto');
+const { encrypt } = require('../util/password-encrypto');
 const jwtManager = require('../util/jwt-manager');
 
 const USERS_COLLECTION = 'users';
@@ -17,7 +17,7 @@ const resolvers = {
 
                 // create
                 const id = uuid();
-                const { passwordKey, salt } = await encrypto(password);
+                const { passwordKey, salt } = await encrypt(password);
                 const token = await jwtManager.tokenCreator({ id });
 
                 await context.DBManager.batch(
