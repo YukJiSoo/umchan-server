@@ -12,7 +12,7 @@ const typeDef = gql`
     }
 
     extend type Mutation {
-        createRunning(user: CreateRunningInput): CreateRunningMutationResponse
+        createRunning(running: CreateRunningInput): CreateRunningMutationResponse
     }
     
     "Input"

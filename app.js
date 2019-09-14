@@ -21,7 +21,11 @@ const server = new ApolloServer({
         accounts.typeDef,
         runnings.typeDef,
     ],
-    resolvers: [users.resolvers, accounts.resolvers],
+    resolvers: [
+        users.resolvers,
+        accounts.resolvers,
+        runnings.resolvers,
+    ],
 
     formatError: (error) => error,
 
