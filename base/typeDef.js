@@ -8,9 +8,26 @@ const typeDef = gql`
         longitude: Float!
     }
 
+    type Date {
+        year: Int
+        month: Int
+        date: Int
+        hour: Int
+        minute: Int
+    }
+
+    "Input"
     input LocationInput {
         latitude: Float!
         longitude: Float!
+    }
+
+    input DateInput {
+        year: Int!
+        month: Int!
+        date: Int!
+        hour: Int!
+        minute: Int!
     }
 
     "Response"

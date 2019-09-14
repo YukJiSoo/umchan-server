@@ -9,12 +9,18 @@ const DBManager = require('./service/db-manager');
 
 const users = require('./users');
 const accounts = require('./accounts');
+const runnings = require('./runnings');
 const base = require('./base');
 
 const app = express();
 
 const server = new ApolloServer({
-    typeDefs: [base.typeDef, users.typeDef, accounts.typeDef],
+    typeDefs: [
+        base.typeDef,
+        users.typeDef,
+        accounts.typeDef,
+        runnings.typeDef,
+    ],
     resolvers: [users.resolvers, accounts.resolvers],
 
     formatError: (error) => error,
