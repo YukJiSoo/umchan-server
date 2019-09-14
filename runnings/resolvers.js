@@ -46,7 +46,6 @@ const resolvers = {
                     code: 201,
                     success: true,
                     message: 'create running success',
-                    id,
                 };
             } catch (error) {
                 console.error(`err: runnings/resolver.js - createRunning method ${error.MESSAGE ? error.MESSAGE : error}`);

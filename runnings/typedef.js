@@ -29,7 +29,6 @@ const typeDef = gql`
         code: String!
         success: Boolean!
         message: String!
-        id: ID
     }
 `;
 
