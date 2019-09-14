@@ -31,6 +31,7 @@ const resolvers = {
                             nickname,
                             imagePath: `baseurl(todo)${id}`,
                             location,
+                            runnings: [],
                         },
                     },
                     {

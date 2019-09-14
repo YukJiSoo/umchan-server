@@ -8,6 +8,7 @@ const typeDef = gql`
         nickname: String!
         imagePath: String!
         location: Location!
+        runnings: [String]
     }
 
     extend type Query {
