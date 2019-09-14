@@ -11,6 +11,10 @@ const typeDef = gql`
         runningPoints: [Location]
     }
 
+    extend type Query {
+        runnings: RunningsQueryResponse
+    }
+
     extend type Mutation {
         createRunning(running: CreateRunningInput): CreateRunningMutationResponse
     }
@@ -25,6 +29,13 @@ const typeDef = gql`
     }
 
     "Response"
+    type RunningsQueryResponse implements MutationResponse {
+        code: String!
+        success: Boolean!
+        message: String!
+        runnings: [Running]
+    }
+
     type CreateRunningMutationResponse implements MutationResponse {
         code: String!
         success: Boolean!

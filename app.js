@@ -6,6 +6,7 @@ const express = require('express');
 const { ApolloServer } = require('apollo-server-express');
 
 const DBManager = require('./service/db-manager');
+const jwtManager = require('./util/jwt-manager');
 
 const users = require('./users');
 const accounts = require('./accounts');
@@ -29,7 +30,13 @@ const server = new ApolloServer({
 
     formatError: (error) => error,
 
-    context: ({ req, res }) => ({ req, res, DBManager }),
+    context: ({ req, res }) => {
+        const token = req.headers.authorization || '';
+        const decoded = jwtManager.isTokenValid(token);
+        const userID = decoded.id;
+
+        return { req, res, DBManager, userID };
+    },
 });
 
 server.applyMiddleware({ app, path: '/graphql' });

@@ -4,6 +4,54 @@ const RUNNINGS_COLLECTION = 'runnings';
 const USERS_COLLECTION = 'users';
 
 const resolvers = {
+    Query: {
+        async runnings(_, args, context) {
+            const { userID } = context;
+
+            if (!userID) {
+                return {
+                    code: 401,
+                    success: false,
+                    message: 'token is null',
+                };
+            }
+
+            try {
+                const user = await context.DBManager.read({
+                    collection: USERS_COLLECTION,
+                    doc: userID,
+                });
+
+                const runningIDs = user.data().runnings;
+
+                const runnings = [];
+                // eslint-disable-next-line no-restricted-syntax
+                for (const runningID of runningIDs) {
+                    // eslint-disable-next-line no-await-in-loop
+                    const running = await context.DBManager.read({
+                        collection: RUNNINGS_COLLECTION,
+                        doc: runningID,
+                    });
+                    runnings.push(running.data());
+                }
+
+                return {
+                    code: 201,
+                    success: true,
+                    message: 'load runnings success',
+                    runnings,
+                };
+            } catch (error) {
+                console.error(`err: runnings/resolver.js - runnings method ${error.MESSAGE ? error.MESSAGE : error}`);
+
+                return {
+                    code: error.CODE ? error.CODE : 500,
+                    success: false,
+                    message: error.MESSAGE ? error.MESSAGE : 'internal server error',
+                };
+            }
+        },
+    },
     Mutation: {
         async createRunning(_, args, context) {
             const { name, oneLine, runningDate, registerLimitDate, runningPoints } = args.running;
