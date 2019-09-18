@@ -12,7 +12,7 @@ const typeDef = gql`
     }
 
     extend type Query {
-        user: String
+        user: UserQueryResponse
     }
 
     extend type Mutation {
@@ -29,6 +29,13 @@ const typeDef = gql`
     }
 
     "Response"
+    type UserQueryResponse implements Response {
+        code: String!
+        success: Boolean!
+        message: String!
+        user: User
+    }
+
     type RegisterUserMutationResponse implements Response {
         code: String!
         success: Boolean!
