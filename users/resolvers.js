@@ -7,6 +7,41 @@ const USERS_COLLECTION = 'users';
 const ACCOUNTS_COLLECTION = 'accounts';
 
 const resolvers = {
+    Query: {
+        async user(_, args, context) {
+            const { userID } = context;
+
+            if (!userID) {
+                return {
+                    code: 401,
+                    success: false,
+                    message: 'token is null',
+                };
+            }
+
+            try {
+                const user = await context.DBManager.read({
+                    collection: USERS_COLLECTION,
+                    doc: userID,
+                });
+
+                return {
+                    code: 201,
+                    success: true,
+                    message: 'load user success',
+                    user: user.data(),
+                };
+            } catch (error) {
+                console.error(`err: users/resolver.js - user method ${error.MESSAGE ? error.MESSAGE : error}`);
+
+                return {
+                    code: error.CODE ? error.CODE : 500,
+                    success: false,
+                    message: error.MESSAGE ? error.MESSAGE : 'internal server error',
+                };
+            }
+        },
+    },
     Mutation: {
         async register(_, args, context) {
             const { email, password, name, nickname, location } = args.user;
