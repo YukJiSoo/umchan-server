@@ -104,6 +104,7 @@ const resolvers = {
             }
 
             const { name, oneLine, runningDate, registerLimitDate, runningPoints } = args.running;
+            const { nickname } = args;
 
             try {
                 // create
@@ -120,6 +121,11 @@ const resolvers = {
                             runningDate,
                             registerLimitDate,
                             runningPoints,
+                            organizer: {
+                                nickname,
+                                userID,
+                            },
+                            participants: [],
                         },
                     },
                     {

@@ -17,7 +17,7 @@ const typeDef = gql`
     }
 
     extend type Mutation {
-        createRunning(running: CreateRunningInput): CreateRunningMutationResponse
+        createRunning(nickname: String, running: CreateRunningInput): CreateRunningMutationResponse
     }
     
     "Input"
