@@ -31,9 +31,10 @@ const server = new ApolloServer({
     formatError: (error) => error,
 
     context: ({ req, res }) => {
-        const token = req.headers.authorization || '';
+        const authorizationHeader = req.headers.authorization || '';
+        const token = authorizationHeader.split(' ')[1];
         const decoded = jwtManager.isTokenValid(token);
-        const userID = decoded.id;
+        const userID = decoded ? decoded.id : undefined;
 
         return { req, res, DBManager, userID };
     },

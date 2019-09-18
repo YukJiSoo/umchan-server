@@ -13,6 +13,7 @@ const typeDef = gql`
 
     extend type Query {
         runnings: RunningsQueryResponse
+        running(id: ID): RunningQueryResponse
     }
 
     extend type Mutation {
@@ -29,14 +30,21 @@ const typeDef = gql`
     }
 
     "Response"
-    type RunningsQueryResponse implements MutationResponse {
+    type RunningQueryResponse implements Response {
         code: String!
         success: Boolean!
         message: String!
-        runnings: [Running]
+        running: Running!
     }
 
-    type CreateRunningMutationResponse implements MutationResponse {
+    type RunningsQueryResponse implements Response {
+        code: String!
+        success: Boolean!
+        message: String!
+        runnings: [Running!]
+    }
+
+    type CreateRunningMutationResponse implements Response {
         code: String!
         success: Boolean!
         message: String!

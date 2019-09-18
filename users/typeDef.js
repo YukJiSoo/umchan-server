@@ -29,7 +29,7 @@ const typeDef = gql`
     }
 
     "Response"
-    type RegisterUserMutationResponse implements MutationResponse {
+    type RegisterUserMutationResponse implements Response {
         code: String!
         success: Boolean!
         message: String!

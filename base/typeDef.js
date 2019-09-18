@@ -31,7 +31,7 @@ const typeDef = gql`
     }
 
     "Response"
-    interface MutationResponse {
+    interface Response {
         code: String!
         success: Boolean!
         message: String!

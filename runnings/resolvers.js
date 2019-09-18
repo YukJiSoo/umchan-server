@@ -32,9 +32,12 @@ const resolvers = {
                         collection: RUNNINGS_COLLECTION,
                         doc: runningID,
                     });
-                    runnings.push(running.data());
+                    const data = running.data();
+                    data.id = runningID;
+                    runnings.push(data);
                 }
 
+                console.log('end');
                 return {
                     code: 201,
                     success: true,
@@ -51,16 +54,61 @@ const resolvers = {
                 };
             }
         },
+        async running(_, args, context) {
+            const { userID } = context;
+
+            if (!userID) {
+                return {
+                    code: 401,
+                    success: false,
+                    message: 'token is null',
+                };
+            }
+
+            const { id } = args;
+
+            try {
+                const running = await context.DBManager.read({
+                    collection: RUNNINGS_COLLECTION,
+                    doc: id,
+                });
+
+                console.log(running.data());
+                return {
+                    code: 201,
+                    success: true,
+                    message: 'load running success',
+                    running: running.data(),
+                };
+            } catch (error) {
+                console.error(`err: runnings/resolver.js - running method ${error.MESSAGE ? error.MESSAGE : error}`);
+
+                return {
+                    code: error.CODE ? error.CODE : 500,
+                    success: false,
+                    message: error.MESSAGE ? error.MESSAGE : 'internal server error',
+                };
+            }
+        },
     },
     Mutation: {
         async createRunning(_, args, context) {
+            const { userID } = context;
+
+            if (!userID) {
+                return {
+                    code: 401,
+                    success: false,
+                    message: 'token is null',
+                };
+            }
+
             const { name, oneLine, runningDate, registerLimitDate, runningPoints } = args.running;
 
             try {
                 // create
                 const id = uuid();
 
-                const userID = '4ea72132dcc985d39418bf90a9c78fcd';
                 await context.DBManager.batch(
                     {
                         method: 'create',
