@@ -18,7 +18,7 @@ const typeDef = gql`
     }
 
     extend type Query {
-        crews: CrewsQueryResponse
+        crews(name: String): CrewsQueryResponse
     }
 
     extend type Mutation {
