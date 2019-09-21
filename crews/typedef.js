@@ -6,10 +6,15 @@ const typeDef = gql`
         id: ID
         name: String
         oneLine: String
-        leader: Member
         imagePath: String
-        creationDate: String
+        creationDate: Date
+        leader: Member
         members: [Member]
+    }
+
+    type Member {
+        name: String,
+        userID: String
     }
 
     extend type Mutation {
@@ -20,7 +25,7 @@ const typeDef = gql`
     input CreateCrewInput {
         name: String!
         oneLine: String!
-        leader: String!
+        imagePath: String!
         creationDate: DateInput!
     }
 
