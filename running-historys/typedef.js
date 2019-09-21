@@ -13,7 +13,7 @@ const typeDef = gql`
     }
 
     extend type Query {
-        runningHistroys: RunningsHistorysQueryResponse
+        runningHistorys: RunningsHistorysQueryResponse
     }
 
     "Response"

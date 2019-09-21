@@ -11,6 +11,7 @@ const jwtManager = require('./util/jwt-manager');
 const users = require('./users');
 const accounts = require('./accounts');
 const runnings = require('./runnings');
+const runningHistorys = require('./running-historys');
 const crews = require('./crews');
 const base = require('./base');
 
@@ -23,12 +24,14 @@ const server = new ApolloServer({
         accounts.typeDef,
         runnings.typeDef,
         crews.typeDef,
+        runningHistorys.typeDef,
     ],
     resolvers: [
         users.resolvers,
         accounts.resolvers,
         runnings.resolvers,
         crews.resolvers,
+        runningHistorys.resolvers,
     ],
 
     formatError: (error) => error,
