@@ -134,13 +134,6 @@ const resolvers = {
                         doc: userID,
                         key: 'runnings',
                         value: id,
-                        data: {
-                            name,
-                            oneLine,
-                            runningDate,
-                            registerLimitDate,
-                            runningPoints,
-                        },
                     },
                 );
 
