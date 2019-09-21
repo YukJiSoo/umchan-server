@@ -12,7 +12,7 @@ const typeDef = gql`
     }
 
     extend type Query {
-        runnings: RunningsQueryResponse
+        runnings(name: String): RunningsQueryResponse
         running(id: ID): RunningQueryResponse
     }
 
