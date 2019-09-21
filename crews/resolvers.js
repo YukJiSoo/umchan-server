@@ -16,13 +16,13 @@ const resolvers = {
                 };
             }
 
-            const { name, oneLine, creationDate, imagePath } = args.crew;
+            const { name, oneLine, creationDate } = args.crew;
             const { nickname } = args;
 
             try {
                 // create
                 const id = uuid();
-
+                const imagePath = `crews/${id}`;
                 await context.DBManager.batch(
                     {
                         method: 'create',

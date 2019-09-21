@@ -17,6 +17,10 @@ const typeDef = gql`
         userID: String
     }
 
+    extend type Query {
+        crews: CrewsQueryResponse
+    }
+
     extend type Mutation {
         createCrew(nickname: String, crew: CreateCrewInput): CreateCrewMutationResponse
     }
@@ -25,11 +29,18 @@ const typeDef = gql`
     input CreateCrewInput {
         name: String!
         oneLine: String!
-        imagePath: String!
         creationDate: DateInput!
     }
 
     "Response"
+    type CrewsQueryResponse implements Response {
+        code: String!
+        success: Boolean!
+        message: String!
+        crews: [Crew!]
+    }
+
+
     type CreateCrewMutationResponse implements Response {
         code: String!
         success: Boolean!
