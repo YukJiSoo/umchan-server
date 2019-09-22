@@ -17,7 +17,18 @@ const typeDef = gql`
     }
 
     extend type Mutation {
-        registerRunningsHistory(runningID: String, updateIDList: [String]): RegisterRunningsHistoryMutationResponse
+        registerRunningsHistory(runningHistory: RunningHistoryInput): RegisterRunningsHistoryMutationResponse
+    }
+
+    "Input"
+    input RunningHistoryInput {
+        id: ID!
+        name: String!
+        oneLine: String!
+        runningDate: DateInput!
+        leader: MemberInput!
+        members: [MemberInput]!
+        runningPoints: [LocationInput]!
     }
 
     "Response"
