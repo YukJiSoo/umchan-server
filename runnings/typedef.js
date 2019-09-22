@@ -8,6 +8,8 @@ const typeDef = gql`
         oneLine: String
         runningDate: Date
         registerLimitDate: Date
+        leader: Member
+        members: [Member]
         runningPoints: [Location]
     }
 

@@ -16,6 +16,11 @@ const typeDef = gql`
         minute: Int
     }
 
+    type Member {
+        name: String,
+        userID: String
+    }
+
     "Input"
     input LocationInput {
         latitude: Float!
@@ -28,6 +33,11 @@ const typeDef = gql`
         date: Int!
         hour: Int!
         minute: Int!
+    }
+
+    input MemberInput {
+        name: String,
+        userID: String
     }
 
     "Response"

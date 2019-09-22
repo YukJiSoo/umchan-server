@@ -12,11 +12,6 @@ const typeDef = gql`
         members: [Member]
     }
 
-    type Member {
-        name: String,
-        userID: String
-    }
-
     extend type Query {
         crews(name: String): CrewsQueryResponse
     }

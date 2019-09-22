@@ -16,12 +16,22 @@ const typeDef = gql`
         runningHistorys: RunningsHistorysQueryResponse
     }
 
+    extend type Mutation {
+        registerRunningsHistory(runningID: String, updateIDList: [String]): RegisterRunningsHistoryMutationResponse
+    }
+
     "Response"
     type RunningsHistorysQueryResponse implements Response {
         code: String!
         success: Boolean!
         message: String!
         runningHistroys: [RunningHistory!]
+    }
+
+    type RegisterRunningsHistoryMutationResponse implements Response {
+        code: String!
+        success: Boolean!
+        message: String!
     }
 `;
 
