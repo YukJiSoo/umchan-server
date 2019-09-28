@@ -1,7 +1,10 @@
 node_modules
 .eslintignore
+firebase-debug.log
+.DS_Store
 
 # secret key info
 firebase-service-account-key.json
 password-encrypto.js
 secret-config.json
+

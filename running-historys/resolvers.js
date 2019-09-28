@@ -47,10 +47,42 @@ const runningHistorys = async (_, args, context) => {
     }
 };
 
+// const registerRunningHistory = async (_, args, context) => {
+//     const { userID } = context;
+
+//     if (!userID) {
+//         return {
+//             code: 401,
+//             success: false,
+//             message: 'token is null',
+//         };
+//     }
+
+//     try {
+
+//         return {
+//             code: 201,
+//             success: true,
+//             message: 'register running history success',
+//         };
+//     } catch (error) {
+//         console.error(`err: running-histroy/resolver.js - registerRunningHistory method ${error.MESSAGE ? error.MESSAGE : error}`);
+
+//         return {
+//             code: error.CODE ? error.CODE : 500,
+//             success: false,
+//             message: error.MESSAGE ? error.MESSAGE : 'internal server error',
+//         };
+//     }
+// };
+
 const resolvers = {
     Query: {
         runningHistorys,
     },
+    // Mutation: {
+    //     registerRunningHistory,
+    // },
 };
 
 module.exports = {

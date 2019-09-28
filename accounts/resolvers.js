@@ -7,11 +7,12 @@ const resolvers = {
     Mutation: {
         async login(_, args, context) {
             const { account } = args;
-
+            console.log(account);
             try {
                 // check fields validation
                 const id = await validators.loginValidate(account);
 
+                
                 // create token
                 const token = await jwtManager.tokenCreator({ id });
 

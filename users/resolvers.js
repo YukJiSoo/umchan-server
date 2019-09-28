@@ -15,7 +15,7 @@ const resolvers = {
                 return {
                     code: 401,
                     success: false,
-                    message: 'token is null',
+                    message: 'token is expired',
                 };
             }
 

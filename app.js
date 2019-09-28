@@ -51,3 +51,5 @@ server.applyMiddleware({ app, path: '/graphql' });
 app.listen(PORT, () => {
     console.log(`app is listening to port ${PORT}`);
 });
+
+module.exports = app;
