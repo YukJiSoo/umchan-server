@@ -11,7 +11,6 @@ const registerValidate = async (validateValue) => {
         { value: validateValue.password, validator: password },
         { value: validateValue.name, validator: name },
         { value: validateValue.nickname, validator: nickname },
-        { value: validateValue.location, validator: location },
     ];
 
     try {
