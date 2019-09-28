@@ -11,6 +11,7 @@ const typeDef = gql`
         leader: Member
         members: [Member]
         runningPoints: [Location]
+        district: String
     }
 
     extend type Query {
@@ -29,6 +30,7 @@ const typeDef = gql`
         runningDate: DateInput!
         registerLimitDate: DateInput!
         runningPoints: [LocationInput]!
+        district: String!
     }
 
     "Response"

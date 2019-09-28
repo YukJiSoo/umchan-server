@@ -123,30 +123,34 @@ const resolvers = {
                 };
             }
 
-            const { name, oneLine, runningDate, registerLimitDate, runningPoints } = args.running;
+            const { name, oneLine, runningDate, registerLimitDate, runningPoints, district } = args.running;
             const { nickname } = args;
 
             try {
                 // create
                 const id = uuid();
 
+                const data = {};
+                data[id] = {
+                    name,
+                    oneLine,
+                    runningDate,
+                    registerLimitDate,
+                    runningPoints,
+                    organizer: {
+                        nickname,
+                        userID,
+                    },
+                    participants: [],
+                    district,
+                };
+
                 await context.DBManager.batch(
                     {
-                        method: 'create',
+                        method: 'update',
                         collection: RUNNINGS_COLLECTION,
-                        doc: id,
-                        data: {
-                            name,
-                            oneLine,
-                            runningDate,
-                            registerLimitDate,
-                            runningPoints,
-                            organizer: {
-                                nickname,
-                                userID,
-                            },
-                            participants: [],
-                        },
+                        doc: district,
+                        data,
                     },
                     {
                         method: 'updateArrayField',
