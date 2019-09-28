@@ -6,9 +6,9 @@ const typeDef = gql`
         id: ID!
         name: String!
         nickname: String!
-        imagePath: String!
-        location: Location!
+        district: String!
         runnings: [String]
+        crews: [String]
     }
 
     extend type Query {
@@ -25,7 +25,7 @@ const typeDef = gql`
         password: String!
         name: String!
         nickname: String!
-        location: LocationInput!
+        district: String!
     }
 
     "Response"

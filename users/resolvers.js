@@ -44,7 +44,7 @@ const resolvers = {
     },
     Mutation: {
         async register(_, args, context) {
-            const { email, password, name, nickname, location } = args.user;
+            const { email, password, name, nickname, district } = args.user;
 
             try {
                 // check fields validation
@@ -64,9 +64,9 @@ const resolvers = {
                             id,
                             name,
                             nickname,
-                            imagePath: `baseurl(todo)${id}`,
-                            location,
+                            district,
                             runnings: [],
+                            crews: [],
                         },
                     },
                     {
