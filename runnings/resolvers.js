@@ -102,12 +102,19 @@ const resolvers = {
                 });
                 const running = runningList.data()[id];
 
-                return {
+                const result = {
                     code: 201,
                     success: true,
                     message: 'load running success',
                     running,
                 };
+
+                const isApplied = running.awaitMembers.filter((cur) => cur.userID === userID);
+                const isMember = running.members.filter((cur) => cur.userID === userID);
+                if (isApplied.length !== 0) result.isApplied = true;
+                if (isMember.length !== 0) result.isMember = true;
+
+                return result;
             } catch (error) {
                 console.error(`err: runnings/resolver.js - running method ${error.MESSAGE ? error.MESSAGE : error}`);
 

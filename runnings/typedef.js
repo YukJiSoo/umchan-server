@@ -52,6 +52,8 @@ const typeDef = gql`
         success: Boolean!
         message: String!
         running: Running!
+        isApplied: Boolean
+        isMember: Boolean
     }
 
     type RunningsQueryResponse implements Response {
