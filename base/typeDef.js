@@ -18,6 +18,8 @@ const typeDef = gql`
 
     type Member {
         name: String,
+        nickname: String,
+        district: String,
         userID: String
     }
 
@@ -37,6 +39,8 @@ const typeDef = gql`
 
     input MemberInput {
         name: String,
+        nickname: String,
+        district: String,
         userID: String
     }
 

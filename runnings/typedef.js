@@ -16,7 +16,7 @@ const typeDef = gql`
 
     extend type Query {
         runnings(name: String): RunningsQueryResponse
-        running(id: ID): RunningQueryResponse
+        running(input: RunningInput): RunningQueryResponse
     }
 
     extend type Mutation {
@@ -24,6 +24,11 @@ const typeDef = gql`
     }
     
     "Input"
+    input RunningInput {
+        id: String!
+        district: String!
+    }
+
     input CreateRunningInput {
         name: String!
         oneLine: String!

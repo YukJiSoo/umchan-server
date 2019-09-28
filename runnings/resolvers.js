@@ -93,20 +93,20 @@ const resolvers = {
                 };
             }
 
-            const { id } = args;
+            const { id, district } = args.input;
 
             try {
-                const running = await context.DBManager.read({
+                const runningList = await context.DBManager.read({
                     collection: RUNNINGS_COLLECTION,
-                    doc: id,
+                    doc: district,
                 });
+                const running = runningList.data()[id];
 
-                console.log(running.data());
                 return {
                     code: 201,
                     success: true,
                     message: 'load running success',
-                    running: running.data(),
+                    running,
                 };
             } catch (error) {
                 console.error(`err: runnings/resolver.js - running method ${error.MESSAGE ? error.MESSAGE : error}`);
@@ -145,11 +145,13 @@ const resolvers = {
                     runningDate,
                     registerLimitDate,
                     runningPoints,
-                    organizer: {
+                    leader: {
+                        name,
                         nickname,
+                        district,
                         userID,
                     },
-                    participants: [],
+                    members: [],
                     district,
                 };
 
@@ -165,7 +167,10 @@ const resolvers = {
                         collection: USERS_COLLECTION,
                         doc: userID,
                         key: 'runnings',
-                        value: id,
+                        value: {
+                            district,
+                            id,
+                        },
                     },
                 );
 
