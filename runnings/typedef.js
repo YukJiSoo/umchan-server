@@ -10,6 +10,7 @@ const typeDef = gql`
         registerLimitDate: Date
         leader: Member
         members: [Member]
+        awaitMembers: [Member]
         runningPoints: [Location]
         district: String
     }
@@ -21,6 +22,7 @@ const typeDef = gql`
 
     extend type Mutation {
         createRunning(nickname: String, running: CreateRunningInput): CreateRunningMutationResponse
+        applyRunning(input: ApplyRunningInput): ApplyRunningMutationResponse
     }
     
     "Input"
@@ -36,6 +38,12 @@ const typeDef = gql`
         registerLimitDate: DateInput!
         runningPoints: [LocationInput]!
         district: String!
+    }
+
+    input ApplyRunningInput {
+        id: String!
+        district: String!
+        user: MemberInput!
     }
 
     "Response"
@@ -54,6 +62,12 @@ const typeDef = gql`
     }
 
     type CreateRunningMutationResponse implements Response {
+        code: String!
+        success: Boolean!
+        message: String!
+    }
+
+    type ApplyRunningMutationResponse implements Response {
         code: String!
         success: Boolean!
         message: String!
