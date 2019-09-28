@@ -31,11 +31,19 @@ async function getMyRunningList(context, userID) {
 async function getSomeRunningList(context, name) {
     const runnings = await context.DBManager.read({
         collection: RUNNINGS_COLLECTION,
+        doc: name,
     });
 
-    return runnings.docs
-        .map((doc) => doc.data())
-        .filter((running) => running.name.includes(name));
+    const result = [];
+    const datas = runnings.data();
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const key in datas) {
+        const data = datas[key];
+        data.id = key;
+        result.push(data);
+    }
+    return result;
 }
 
 const runnings = async (_, args, context) => {
