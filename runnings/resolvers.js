@@ -256,6 +256,68 @@ const resolvers = {
                 };
             }
         },
+        async goOutRunning(_, args, context) {
+            const { userID } = context;
+
+            if (!userID) {
+                return {
+                    code: 401,
+                    success: false,
+                    message: 'token is null',
+                };
+            }
+
+            const { id, district } = args.input;
+
+            try {
+                const runningList = await context.DBManager.read({
+                    collection: district,
+                    doc: id,
+                });
+
+                const data = runningList.data();
+                const index = data.awaitMembers.findIndex((cur) => cur.userID === userID);
+                data.awaitMembers.splice(index, 1);
+
+                const user = await context.DBManager.read({
+                    collection: USERS_COLLECTION,
+                    doc: userID,
+                });
+
+                const userData = user.data();
+                const runningIndex = userData.runnings.findIndex((cur) => cur.id === id);
+                userData.runnings.splice(runningIndex, 1);
+
+                await context.DBManager.batch(
+                    {
+                        method: 'update',
+                        collection: district,
+                        doc: id,
+                        data,
+                    },
+                    {
+                        method: 'update',
+                        collection: USERS_COLLECTION,
+                        doc: userID,
+                        data: userData,
+                    },
+                );
+
+                return {
+                    code: 201,
+                    success: true,
+                    message: 'go out running success',
+                };
+            } catch (error) {
+                console.error(`err: runnings/resolver.js - goOutRunning method ${error.MESSAGE ? error.MESSAGE : error}`);
+
+                return {
+                    code: error.CODE ? error.CODE : 500,
+                    success: false,
+                    message: error.MESSAGE ? error.MESSAGE : 'internal server error',
+                };
+            }
+        },
     },
 };
 
