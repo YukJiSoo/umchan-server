@@ -1,48 +1,27 @@
 const uuid = require('../util/uuid-creator');
 
-const RUNNINGS_COLLECTION = 'runnings';
 const USERS_COLLECTION = 'users';
 
 async function getMyRunningList(context, userID) {
-    const runningList = [];
-
     const user = await context.DBManager.read({
         collection: USERS_COLLECTION,
         doc: userID,
     });
 
-    const runningIDs = user.data().runnings;
-
-    // eslint-disable-next-line no-restricted-syntax
-    for (const runningID of runningIDs) {
-        // eslint-disable-next-line no-await-in-loop
-        const running = await context.DBManager.read({
-            collection: RUNNINGS_COLLECTION,
-            doc: runningID,
-        });
-        const data = running.data();
-        data.id = runningID;
-        runningList.push(data);
-    }
-
-    return runningList;
+    return user.data().runnings;
 }
 
-async function getSomeRunningList(context, name) {
-    const runnings = await context.DBManager.read({
-        collection: RUNNINGS_COLLECTION,
-        doc: name,
+async function getDistrictRunningList(context, name) {
+    const snapshots = await context.DBManager.read({
+        collection: name,
     });
 
-    const result = [];
-    const datas = runnings.data();
+    const result = snapshots.docs.map((doc) => {
+        const data = doc.data();
+        data.id = doc.id;
+        return data;
+    });
 
-    // eslint-disable-next-line no-restricted-syntax
-    for (const key in datas) {
-        const data = datas[key];
-        data.id = key;
-        result.push(data);
-    }
     return result;
 }
 
@@ -60,7 +39,7 @@ const runnings = async (_, args, context) => {
     const { name } = args;
 
     try {
-        const runningList = name ? await getSomeRunningList(context, name) : await getMyRunningList(context, userID);
+        const runningList = name ? await getDistrictRunningList(context, name) : await getMyRunningList(context, userID);
 
         return {
             code: 201,
@@ -94,13 +73,13 @@ const resolvers = {
             }
 
             const { id, district } = args.input;
-
+            console.log(id, district);
             try {
                 const runningList = await context.DBManager.read({
-                    collection: RUNNINGS_COLLECTION,
-                    doc: district,
+                    collection: district,
+                    doc: id,
                 });
-                const running = runningList.data()[id];
+                const running = runningList.data();
 
                 const result = {
                     code: 201,
@@ -109,6 +88,7 @@ const resolvers = {
                     running,
                 };
 
+                console.log(running);
                 const isApplied = running.awaitMembers.filter((cur) => cur.userID === userID);
                 const isMember = running.members.filter((cur) => cur.userID === userID);
                 if (isApplied.length !== 0) result.isApplied = true;
@@ -145,8 +125,7 @@ const resolvers = {
                 // create
                 const id = uuid();
 
-                const data = {};
-                data[id] = {
+                const data = {
                     name,
                     oneLine,
                     runningDate,
@@ -155,8 +134,8 @@ const resolvers = {
                     leader: {
                         name,
                         nickname,
-                        district,
                         userID,
+                        district,
                     },
                     members: [],
                     district,
@@ -164,9 +143,9 @@ const resolvers = {
 
                 await context.DBManager.batch(
                     {
-                        method: 'update',
-                        collection: RUNNINGS_COLLECTION,
-                        doc: district,
+                        method: 'create',
+                        collection: district,
+                        doc: id,
                         data,
                     },
                     {
@@ -175,6 +154,8 @@ const resolvers = {
                         doc: userID,
                         key: 'runnings',
                         value: {
+                            name,
+                            runningDate,
                             district,
                             id,
                         },
@@ -211,13 +192,12 @@ const resolvers = {
 
             try {
                 const runningList = await context.DBManager.read({
-                    collection: RUNNINGS_COLLECTION,
-                    doc: district,
+                    collection: district,
+                    doc: id,
                 });
-                const data = {};
-                data[id] = runningList.data()[id];
+                const data = runningList.data();
 
-                const isApplied = data[id].awaitMembers.filter((cur) => cur.userID === userID);
+                const isApplied = data.awaitMembers.filter((cur) => cur.userID === userID);
                 if (isApplied.length !== 0) {
                     return {
                         code: 409,
@@ -226,7 +206,7 @@ const resolvers = {
                     };
                 }
 
-                const isMember = data[id].members.filter((cur) => cur.userID === userID);
+                const isMember = data.members.filter((cur) => cur.userID === userID);
                 if (isMember.length !== 0) {
                     return {
                         code: 409,
@@ -236,11 +216,11 @@ const resolvers = {
                 }
 
                 user.userID = userID;
-                data[id].awaitMembers.push(user);
+                data.awaitMembers.push(user);
 
                 await context.DBManager.update({
-                    collection: RUNNINGS_COLLECTION,
-                    doc: district,
+                    collection: district,
+                    doc: id,
                     data,
                 });
 

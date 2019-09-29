@@ -7,8 +7,15 @@ const typeDef = gql`
         name: String!
         nickname: String!
         district: String!
-        runnings: [String]
-        crews: [String]
+        runnings: [RunningShortcut]!
+        crews: [String]!
+    }
+
+    type RunningShortcut {
+        id: ID!
+        district: String!
+        name: String!
+        runningDate: Date
     }
 
     extend type Query {

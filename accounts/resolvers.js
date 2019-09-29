@@ -14,6 +14,7 @@ const resolvers = {
 
                 // create token
                 const token = await jwtManager.tokenCreator({ id });
+                console.log(token);
 
                 const snapshot = await context.DBManager.read(
                     { collection: USERS_COLLECTION, doc: id },
