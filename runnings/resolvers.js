@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 /* eslint-disable no-restricted-syntax */
 const uuid = require('../util/uuid-creator');
 
@@ -138,6 +139,7 @@ const resolvers = {
                         userID,
                         district,
                     },
+                    awaitMembers: [],
                     members: [],
                     district,
                 };

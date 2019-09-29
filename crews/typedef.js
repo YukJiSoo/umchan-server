@@ -6,10 +6,11 @@ const typeDef = gql`
         id: ID
         name: String
         oneLine: String
-        imagePath: String
+        district: String
         creationDate: Date
         leader: Member
         members: [Member]
+        awaitMembers: [Member]
     }
 
     extend type Query {
@@ -17,13 +18,15 @@ const typeDef = gql`
     }
 
     extend type Mutation {
-        createCrew(nickname: String, crew: CreateCrewInput): CreateCrewMutationResponse
+        createCrew(input: CreateCrewInput): CreateCrewMutationResponse
     }
     
     "Input"
     input CreateCrewInput {
+        nickname: String!
         name: String!
         oneLine: String!
+        district: String!
         creationDate: DateInput!
     }
 

@@ -4,28 +4,12 @@ const CREWS_COLLECTION = 'crews';
 const USERS_COLLECTION = 'users';
 
 async function getMyCrewList(context, userID) {
-    const crewList = [];
-
     const user = await context.DBManager.read({
         collection: USERS_COLLECTION,
         doc: userID,
     });
 
-    const crewIDs = user.data().crews;
-
-    // eslint-disable-next-line no-restricted-syntax
-    for (const crewID of crewIDs) {
-        // eslint-disable-next-line no-await-in-loop
-        const crew = await context.DBManager.read({
-            collection: CREWS_COLLECTION,
-            doc: crewID,
-        });
-        const data = crew.data();
-        data.id = crewID;
-        crewList.push(data);
-    }
-
-    return crewList;
+    return user.data().crews;
 }
 
 async function getSomeCrewList(context, name) {
@@ -88,28 +72,28 @@ const resolvers = {
                 };
             }
 
-            const { name, oneLine, creationDate } = args.crew;
-            const { nickname } = args;
+            const { nickname, name, oneLine, creationDate, district } = args.input;
 
             try {
                 // create
                 const id = uuid();
-                const imagePath = `crews/${id}`;
+
                 await context.DBManager.batch(
                     {
                         method: 'create',
-                        collection: CREWS_COLLECTION,
+                        collection: `${district}_crew`,
                         doc: id,
                         data: {
                             name,
                             oneLine,
                             creationDate,
-                            imagePath,
                             leader: {
                                 nickname,
                                 userID,
                             },
                             members: [],
+                            awaitMembers: [],
+                            district,
                         },
                     },
                     {
@@ -117,7 +101,11 @@ const resolvers = {
                         collection: USERS_COLLECTION,
                         doc: userID,
                         key: 'crews',
-                        value: id,
+                        value: {
+                            id,
+                            name,
+                            district,
+                        },
                     },
                 );
 
