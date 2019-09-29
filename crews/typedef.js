@@ -15,6 +15,7 @@ const typeDef = gql`
 
     extend type Query {
         crews(name: String): CrewsQueryResponse
+        crew(input: CrewInput): CrewQueryResponse
     }
 
     extend type Mutation {
@@ -22,6 +23,11 @@ const typeDef = gql`
     }
     
     "Input"
+    input CrewInput {
+        id: String!
+        district: String!
+    }
+
     input CreateCrewInput {
         nickname: String!
         name: String!
@@ -36,6 +42,15 @@ const typeDef = gql`
         success: Boolean!
         message: String!
         crews: [Crew!]
+    }
+
+    type CrewQueryResponse  implements Response {
+        code: String!
+        success: Boolean!
+        message: String!
+        crew: Crew!
+        isApplied: Boolean
+        isMember: Boolean
     }
 
 

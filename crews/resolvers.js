@@ -59,6 +59,50 @@ async function crews(_, args, context) {
 const resolvers = {
     Query: {
         crews,
+        async crew(_, args, context) {
+            const { userID } = context;
+
+            if (!userID) {
+                return {
+                    code: 401,
+                    success: false,
+                    message: 'token is null',
+                };
+            }
+
+            const { id, district } = args.input;
+            console.log(id, district);
+            try {
+                const crewList = await context.DBManager.read({
+                    collection: `${district}_crew`,
+                    doc: id,
+                });
+                const crew = crewList.data();
+
+                const result = {
+                    code: 201,
+                    success: true,
+                    message: 'load crew success',
+                    crew,
+                };
+
+                console.log(crew);
+                const isApplied = crew.awaitMembers.filter((cur) => cur.userID === userID);
+                const isMember = crew.members.filter((cur) => cur.userID === userID);
+                if (isApplied.length !== 0) result.isApplied = true;
+                if (isMember.length !== 0) result.isMember = true;
+
+                return result;
+            } catch (error) {
+                console.error(`err: crews/resolver.js - crew method ${error.MESSAGE ? error.MESSAGE : error}`);
+
+                return {
+                    code: error.CODE ? error.CODE : 500,
+                    success: false,
+                    message: error.MESSAGE ? error.MESSAGE : 'internal server error',
+                };
+            }
+        },
     },
     Mutation: {
         async createCrew(_, args, context) {
