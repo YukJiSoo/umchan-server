@@ -168,6 +168,68 @@ const resolvers = {
                 };
             }
         },
+        async goOutCrew(_, args, context) {
+            const { userID } = context;
+
+            if (!userID) {
+                return {
+                    code: 401,
+                    success: false,
+                    message: 'token is null',
+                };
+            }
+
+            const { id, district } = args.input;
+
+            try {
+                const crewList = await context.DBManager.read({
+                    collection: `${district}_crew`,
+                    doc: id,
+                });
+
+                const data = crewList.data();
+                const index = data.awaitMembers.findIndex((cur) => cur.userID === userID);
+                data.awaitMembers.splice(index, 1);
+
+                const user = await context.DBManager.read({
+                    collection: USERS_COLLECTION,
+                    doc: userID,
+                });
+
+                const userData = user.data();
+                const crewIndex = userData.crews.findIndex((cur) => cur.id === id);
+                userData.crews.splice(crewIndex, 1);
+
+                await context.DBManager.batch(
+                    {
+                        method: 'update',
+                        collection: `${district}_crew`,
+                        doc: id,
+                        data,
+                    },
+                    {
+                        method: 'update',
+                        collection: USERS_COLLECTION,
+                        doc: userID,
+                        data: userData,
+                    },
+                );
+
+                return {
+                    code: 201,
+                    success: true,
+                    message: 'go out crew success',
+                };
+            } catch (error) {
+                console.error(`err: crews/resolver.js - goOutCrew method ${error.MESSAGE ? error.MESSAGE : error}`);
+
+                return {
+                    code: error.CODE ? error.CODE : 500,
+                    success: false,
+                    message: error.MESSAGE ? error.MESSAGE : 'internal server error',
+                };
+            }
+        },
     },
 };
 
