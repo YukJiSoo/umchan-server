@@ -368,6 +368,52 @@ const resolvers = {
                 };
             }
         },
+        async checkRunningMember(_, args, context) {
+            const { userID } = context;
+
+            if (!userID) {
+                return {
+                    code: 401,
+                    success: false,
+                    message: 'token is null',
+                };
+            }
+
+            const { id, district, memberID } = args.input;
+
+            try {
+                const user = await context.DBManager.read({
+                    collection: USERS_COLLECTION,
+                    doc: memberID,
+                });
+                const userData = user.data();
+                const runningIndex = userData.runnings.findIndex((cur) => cur.id === id);
+                userData.runnings[runningIndex].isChecked = true;
+
+                await context.DBManager.batch(
+                    {
+                        method: 'update',
+                        collection: USERS_COLLECTION,
+                        doc: memberID,
+                        data: userData,
+                    },
+                );
+
+                return {
+                    code: 201,
+                    success: true,
+                    message: 'check running member success',
+                };
+            } catch (error) {
+                console.error(`err: runnings/resolver.js - checkRunningMember method ${error.MESSAGE ? error.MESSAGE : error}`);
+
+                return {
+                    code: error.CODE ? error.CODE : 500,
+                    success: false,
+                    message: error.MESSAGE ? error.MESSAGE : 'internal server error',
+                };
+            }
+        },
         async rejectRunningMember(_, args, context) {
             const { userID } = context;
 
