@@ -506,6 +506,15 @@ const resolvers = {
 
                 const userData = user.data();
                 const runningIndex = userData.runnings.findIndex((cur) => cur.id === id);
+
+                if (userData.runnings[runningIndex].isChecked) {
+                    return {
+                        code: 409,
+                        success: false,
+                        message: '이미 참가확인된 참여자입니다',
+                    };
+                }
+
                 userData.runnings.splice(runningIndex, 1);
 
                 await context.DBManager.batch(
