@@ -14,14 +14,18 @@ async function getMyCrewList(context, userID) {
     return user.data().crews;
 }
 
-async function getSomeCrewList(context, name) {
-    const crewList = await context.DBManager.read({
-        collection: CREWS_COLLECTION,
+async function getDistrictCrewList(context, district) {
+    const snapshots = await context.DBManager.read({
+        collection: `${district}_crew`,
     });
 
-    return crewList.docs
-        .map((doc) => doc.data())
-        .filter((crew) => crew.name.includes(name));
+    const result = snapshots.docs.map((doc) => {
+        const data = doc.data();
+        data.id = doc.id;
+        return data;
+    });
+
+    return result;
 }
 
 
@@ -39,7 +43,7 @@ async function crews(_, args, context) {
     const { name } = args;
 
     try {
-        const crewList = name ? await getSomeCrewList(context, name) : await getMyCrewList(context, userID);
+        const crewList = name ? await getDistrictCrewList(context, name) : await getMyCrewList(context, userID);
 
         return {
             code: 201,
@@ -162,6 +166,84 @@ const resolvers = {
                 };
             } catch (error) {
                 console.error(`err: crews/resolver.js - createCrew method ${error.MESSAGE ? error.MESSAGE : error}`);
+
+                return {
+                    code: error.CODE ? error.CODE : 500,
+                    success: false,
+                    message: error.MESSAGE ? error.MESSAGE : 'internal server error',
+                };
+            }
+        },
+        async applyCrew(_, args, context) {
+            const { userID } = context;
+
+            if (!userID) {
+                return {
+                    code: 401,
+                    success: false,
+                    message: 'token is null',
+                };
+            }
+
+            const { id, district, user } = args.input;
+
+            try {
+                const runningList = await context.DBManager.read({
+                    collection: district,
+                    doc: id,
+                });
+                const data = runningList.data();
+
+                const isApplied = data.awaitMembers.filter((cur) => cur.userID === userID);
+                if (isApplied.length !== 0) {
+                    return {
+                        code: 409,
+                        success: false,
+                        message: 'already applied to this running',
+                    };
+                }
+
+                const isMember = data.members.filter((cur) => cur.userID === userID);
+                if (isMember.length !== 0) {
+                    return {
+                        code: 409,
+                        success: false,
+                        message: 'already participated to this running',
+                    };
+                }
+
+                user.userID = userID;
+                data.awaitMembers.push(user);
+
+                await context.DBManager.batch(
+                    {
+                        method: 'update',
+                        collection: district,
+                        doc: id,
+                        data,
+                    },
+                    {
+                        method: 'updateArrayField',
+                        collection: USERS_COLLECTION,
+                        doc: userID,
+                        key: 'runnings',
+                        value: {
+                            name: data.name,
+                            runningDate: data.runningDate,
+                            registerLimitDate: data.registerLimitDate,
+                            district,
+                            id,
+                        },
+                    },
+                );
+
+                return {
+                    code: 201,
+                    success: true,
+                    message: 'apply running success',
+                };
+            } catch (error) {
+                console.error(`err: runnings/resolver.js - applyRunning method ${error.MESSAGE ? error.MESSAGE : error}`);
 
                 return {
                     code: error.CODE ? error.CODE : 500,
