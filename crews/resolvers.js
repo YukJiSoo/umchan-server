@@ -188,18 +188,18 @@ const resolvers = {
             const { id, district, user } = args.input;
 
             try {
-                const runningList = await context.DBManager.read({
-                    collection: district,
+                const crewList = await context.DBManager.read({
+                    collection: `${district}_crew`,
                     doc: id,
                 });
-                const data = runningList.data();
+                const data = crewList.data();
 
                 const isApplied = data.awaitMembers.filter((cur) => cur.userID === userID);
                 if (isApplied.length !== 0) {
                     return {
                         code: 409,
                         success: false,
-                        message: 'already applied to this running',
+                        message: 'already applied to this crew',
                     };
                 }
 
@@ -208,7 +208,7 @@ const resolvers = {
                     return {
                         code: 409,
                         success: false,
-                        message: 'already participated to this running',
+                        message: 'already participated to this crew',
                     };
                 }
 
@@ -218,32 +218,19 @@ const resolvers = {
                 await context.DBManager.batch(
                     {
                         method: 'update',
-                        collection: district,
+                        collection: `${district}_crew`,
                         doc: id,
                         data,
-                    },
-                    {
-                        method: 'updateArrayField',
-                        collection: USERS_COLLECTION,
-                        doc: userID,
-                        key: 'runnings',
-                        value: {
-                            name: data.name,
-                            runningDate: data.runningDate,
-                            registerLimitDate: data.registerLimitDate,
-                            district,
-                            id,
-                        },
                     },
                 );
 
                 return {
                     code: 201,
                     success: true,
-                    message: 'apply running success',
+                    message: 'apply crew success',
                 };
             } catch (error) {
-                console.error(`err: runnings/resolver.js - applyRunning method ${error.MESSAGE ? error.MESSAGE : error}`);
+                console.error(`err: crews/resolver.js - applyCrew method ${error.MESSAGE ? error.MESSAGE : error}`);
 
                 return {
                     code: error.CODE ? error.CODE : 500,
@@ -446,6 +433,17 @@ const resolvers = {
                         collection: `${district}_crew`,
                         doc: id,
                         data,
+                    },
+                    {
+                        method: 'updateArrayField',
+                        collection: USERS_COLLECTION,
+                        doc: memberID,
+                        key: 'crews',
+                        value: {
+                            name: data.name,
+                            district,
+                            id,
+                        },
                     },
                 );
 
