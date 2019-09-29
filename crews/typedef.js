@@ -22,6 +22,9 @@ const typeDef = gql`
         createCrew(input: CreateCrewInput): CreateCrewMutationResponse
         goOutCrew(input: GoOutCrewInput): GoOutCrewMutationResponse
         disassembleCrew(input: DisassembleCrewInput): DisassembleCrewMutationResponse
+        acceptCrewMember(input: AcceptCrewMemberInput): AcceptCrewMemeberMutationResponse
+        rejectCrewMember(input: RejectCrewMemberInput): RejectCrewMemeberMutationResponse
+        exceptCrewMember(input: ExceptCrewMemberInput): ExceptCrewMemeberMutationResponse
     }
     
     "Input"
@@ -48,6 +51,29 @@ const typeDef = gql`
         district: String!
     }
 
+    input AcceptCrewMemberInput {
+        id: String!
+        district: String!
+        memberID: String!
+    }
+
+    input CheckCrewMemberInput {
+        id: String!
+        district: String!
+        memberID: String!
+    }
+
+    input RejectCrewMemberInput {
+        id: String!
+        district: String!
+        memberID: String!
+    }
+
+    input ExceptCrewMemberInput {
+        id: String!
+        district: String!
+        memberID: String!
+    }
     "Response"
     type CrewsQueryResponse implements Response {
         code: String!
@@ -78,6 +104,30 @@ const typeDef = gql`
     }
 
     type DisassembleCrewMutationResponse implements Response {
+        code: String!
+        success: Boolean!
+        message: String!
+    }
+
+    type AcceptCrewMemeberMutationResponse implements Response {
+        code: String!
+        success: Boolean!
+        message: String!
+    }
+
+    type CheckCrewMemeberMutationResponse implements Response {
+        code: String!
+        success: Boolean!
+        message: String!
+    }
+
+    type RejectCrewMemeberMutationResponse implements Response {
+        code: String!
+        success: Boolean!
+        message: String!
+    }
+
+    type ExceptCrewMemeberMutationResponse implements Response {
         code: String!
         success: Boolean!
         message: String!

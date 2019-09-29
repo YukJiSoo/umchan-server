@@ -332,6 +332,189 @@ const resolvers = {
                 };
             }
         },
+        async acceptCrewMember(_, args, context) {
+            const { userID } = context;
+
+            if (!userID) {
+                return {
+                    code: 401,
+                    success: false,
+                    message: 'token is null',
+                };
+            }
+
+            const { id, district, memberID } = args.input;
+
+            try {
+                const crewList = await context.DBManager.read({
+                    collection: `${district}_crew`,
+                    doc: id,
+                });
+
+                const data = crewList.data();
+                const index = data.awaitMembers.findIndex((cur) => cur.userID === memberID);
+                const member = data.awaitMembers[index];
+
+                data.members.push(JSON.parse(JSON.stringify(member)));
+                data.awaitMembers.splice(index, 1);
+
+                await context.DBManager.batch(
+                    {
+                        method: 'update',
+                        collection: `${district}_crew`,
+                        doc: id,
+                        data,
+                    },
+                );
+
+                return {
+                    code: 201,
+                    success: true,
+                    message: 'accept crew member success',
+                };
+            } catch (error) {
+                console.error(`err: crews/resolver.js - acceptCrewMember method ${error.MESSAGE ? error.MESSAGE : error}`);
+
+                return {
+                    code: error.CODE ? error.CODE : 500,
+                    success: false,
+                    message: error.MESSAGE ? error.MESSAGE : 'internal server error',
+                };
+            }
+        },
+        async rejectCrewMember(_, args, context) {
+            const { userID } = context;
+
+            if (!userID) {
+                return {
+                    code: 401,
+                    success: false,
+                    message: 'token is null',
+                };
+            }
+
+            const { id, district, memberID } = args.input;
+
+            try {
+                const crewList = await context.DBManager.read({
+                    collection: `${district}_crew`,
+                    doc: id,
+                });
+
+                const data = crewList.data();
+                const index = data.awaitMembers.findIndex((cur) => cur.userID === memberID);
+                data.awaitMembers.splice(index, 1);
+
+                const user = await context.DBManager.read({
+                    collection: USERS_COLLECTION,
+                    doc: memberID,
+                });
+
+                const userData = user.data();
+                const crewIndex = userData.crews.findIndex((cur) => cur.id === id);
+                userData.crews.splice(crewIndex, 1);
+
+                await context.DBManager.batch(
+                    {
+                        method: 'update',
+                        collection: `${district}_crew`,
+                        doc: id,
+                        data,
+                    },
+                    {
+                        method: 'update',
+                        collection: USERS_COLLECTION,
+                        doc: memberID,
+                        data: userData,
+                    },
+                );
+
+                return {
+                    code: 201,
+                    success: true,
+                    message: 'reject crew member success',
+                };
+            } catch (error) {
+                console.error(`err: crews/resolver.js - rejectCrewMember method ${error.MESSAGE ? error.MESSAGE : error}`);
+
+                return {
+                    code: error.CODE ? error.CODE : 500,
+                    success: false,
+                    message: error.MESSAGE ? error.MESSAGE : 'internal server error',
+                };
+            }
+        },
+        async exceptCrewMember(_, args, context) {
+            const { userID } = context;
+
+            if (!userID) {
+                return {
+                    code: 401,
+                    success: false,
+                    message: 'token is null',
+                };
+            }
+
+            const { id, district, memberID } = args.input;
+
+            try {
+                const crewList = await context.DBManager.read({
+                    collection: `${district}_crew`,
+                    doc: id,
+                });
+
+                const data = crewList.data();
+                const index = data.members.findIndex((cur) => cur.userID === memberID);
+                data.members.splice(index, 1);
+
+                const user = await context.DBManager.read({
+                    collection: USERS_COLLECTION,
+                    doc: memberID,
+                });
+
+                const userData = user.data();
+                const crewIndex = userData.crews.findIndex((cur) => cur.id === id);
+
+                if (userData.crews[crewIndex].isChecked) {
+                    return {
+                        code: 409,
+                        success: false,
+                        message: '이미 크루원입니다',
+                    };
+                }
+
+                userData.crews.splice(crewIndex, 1);
+
+                await context.DBManager.batch(
+                    {
+                        method: 'update',
+                        collection: `${district}_crew`,
+                        doc: id,
+                        data,
+                    },
+                    {
+                        method: 'update',
+                        collection: USERS_COLLECTION,
+                        doc: memberID,
+                        data: userData,
+                    },
+                );
+
+                return {
+                    code: 201,
+                    success: true,
+                    message: 'except crew member success',
+                };
+            } catch (error) {
+                console.error(`err: crews/resolver.js - exceptCrewMember method ${error.MESSAGE ? error.MESSAGE : error}`);
+
+                return {
+                    code: error.CODE ? error.CODE : 500,
+                    success: false,
+                    message: error.MESSAGE ? error.MESSAGE : 'internal server error',
+                };
+            }
+        },
     },
 };
 
