@@ -24,6 +24,7 @@ const typeDef = gql`
         createRunning(nickname: String, running: CreateRunningInput): CreateRunningMutationResponse
         applyRunning(input: ApplyRunningInput): ApplyRunningMutationResponse
         goOutRunning(input: GoOutInput): GoOutUserMutationResponse
+        acceptRunningMember(input: AcceptRunningMemberInput): AcceptRunningMemeberMutationResponse
     }
     
     "Input"
@@ -50,6 +51,12 @@ const typeDef = gql`
     input GoOutInput {
         id: String!
         district: String!
+    }
+
+    input AcceptRunningMemberInput {
+        id: String!
+        district: String!
+        memberID: String!
     }
 
     "Response"
@@ -82,6 +89,12 @@ const typeDef = gql`
     }
 
     type GoOutUserMutationResponse implements Response {
+        code: String!
+        success: Boolean!
+        message: String!
+    }
+
+    type AcceptRunningMemeberMutationResponse implements Response {
         code: String!
         success: Boolean!
         message: String!
