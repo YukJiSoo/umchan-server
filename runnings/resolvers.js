@@ -418,10 +418,72 @@ const resolvers = {
                 return {
                     code: 201,
                     success: true,
-                    message: 'accept running member success',
+                    message: 'reject running member success',
                 };
             } catch (error) {
-                console.error(`err: runnings/resolver.js - acceptRunningMember method ${error.MESSAGE ? error.MESSAGE : error}`);
+                console.error(`err: runnings/resolver.js - rejectRunningMember method ${error.MESSAGE ? error.MESSAGE : error}`);
+
+                return {
+                    code: error.CODE ? error.CODE : 500,
+                    success: false,
+                    message: error.MESSAGE ? error.MESSAGE : 'internal server error',
+                };
+            }
+        },
+        async exceptRunningMember(_, args, context) {
+            const { userID } = context;
+
+            if (!userID) {
+                return {
+                    code: 401,
+                    success: false,
+                    message: 'token is null',
+                };
+            }
+
+            const { id, district, memberID } = args.input;
+
+            try {
+                const runningList = await context.DBManager.read({
+                    collection: district,
+                    doc: id,
+                });
+
+                const data = runningList.data();
+                const index = data.members.findIndex((cur) => cur.userID === memberID);
+                data.members.splice(index, 1);
+
+                const user = await context.DBManager.read({
+                    collection: USERS_COLLECTION,
+                    doc: memberID,
+                });
+
+                const userData = user.data();
+                const runningIndex = userData.runnings.findIndex((cur) => cur.id === id);
+                userData.runnings.splice(runningIndex, 1);
+
+                await context.DBManager.batch(
+                    {
+                        method: 'update',
+                        collection: district,
+                        doc: id,
+                        data,
+                    },
+                    {
+                        method: 'update',
+                        collection: USERS_COLLECTION,
+                        doc: memberID,
+                        data: userData,
+                    },
+                );
+
+                return {
+                    code: 201,
+                    success: true,
+                    message: 'except running member success',
+                };
+            } catch (error) {
+                console.error(`err: runnings/resolver.js - exceptRunningMember method ${error.MESSAGE ? error.MESSAGE : error}`);
 
                 return {
                     code: error.CODE ? error.CODE : 500,
