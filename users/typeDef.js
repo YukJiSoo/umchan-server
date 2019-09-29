@@ -14,8 +14,10 @@ const typeDef = gql`
     type RunningShortcut {
         id: ID!
         district: String!
+        oneLine: String!
         name: String!
         runningDate: Date
+        registerLimitDate: Date
     }
 
     extend type Query {

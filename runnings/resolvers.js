@@ -156,6 +156,7 @@ const resolvers = {
                         value: {
                             name,
                             runningDate,
+                            registerLimitDate,
                             district,
                             id,
                         },
@@ -218,11 +219,27 @@ const resolvers = {
                 user.userID = userID;
                 data.awaitMembers.push(user);
 
-                await context.DBManager.update({
-                    collection: district,
-                    doc: id,
-                    data,
-                });
+                await context.DBManager.batch(
+                    {
+                        method: 'update',
+                        collection: district,
+                        doc: id,
+                        data,
+                    },
+                    {
+                        method: 'updateArrayField',
+                        collection: USERS_COLLECTION,
+                        doc: userID,
+                        key: 'runnings',
+                        value: {
+                            name: data.name,
+                            runningDate: data.runningDate,
+                            registerLimitDate: data.registerLimitDate,
+                            district,
+                            id,
+                        },
+                    },
+                );
 
                 return {
                     code: 201,
