@@ -21,6 +21,7 @@ const typeDef = gql`
     extend type Mutation {
         createCrew(input: CreateCrewInput): CreateCrewMutationResponse
         goOutCrew(input: GoOutCrewInput): GoOutCrewMutationResponse
+        disassembleCrew(input: DisassembleCrewInput): DisassembleCrewMutationResponse
     }
     
     "Input"
@@ -38,6 +39,11 @@ const typeDef = gql`
     }
 
     input GoOutCrewInput {
+        id: String!
+        district: String!
+    }
+
+    input DisassembleCrewInput {
         id: String!
         district: String!
     }
@@ -66,6 +72,12 @@ const typeDef = gql`
     }
 
     type GoOutCrewMutationResponse implements Response {
+        code: String!
+        success: Boolean!
+        message: String!
+    }
+
+    type DisassembleCrewMutationResponse implements Response {
         code: String!
         success: Boolean!
         message: String!

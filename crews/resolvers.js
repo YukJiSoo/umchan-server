@@ -1,3 +1,5 @@
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable no-await-in-loop */
 const uuid = require('../util/uuid-creator');
 
 const CREWS_COLLECTION = 'crews';
@@ -222,6 +224,106 @@ const resolvers = {
                 };
             } catch (error) {
                 console.error(`err: crews/resolver.js - goOutCrew method ${error.MESSAGE ? error.MESSAGE : error}`);
+
+                return {
+                    code: error.CODE ? error.CODE : 500,
+                    success: false,
+                    message: error.MESSAGE ? error.MESSAGE : 'internal server error',
+                };
+            }
+        },
+        async disassembleCrew(_, args, context) {
+            const { userID } = context;
+
+            if (!userID) {
+                return {
+                    code: 401,
+                    success: false,
+                    message: 'token is null',
+                };
+            }
+
+            const { id, district } = args.input;
+
+            try {
+                // leader 크루 목록에서 제거
+                const user = await context.DBManager.read({
+                    collection: USERS_COLLECTION,
+                    doc: userID,
+                });
+
+                const userData = user.data();
+                const crewIndex = userData.crews.findIndex((cur) => cur.id === id);
+                userData.crews.splice(crewIndex, 1);
+
+                // 참가자 목록에서 제거
+                const crewList = await context.DBManager.read({
+                    collection: `${district}_crew`,
+                    doc: id,
+                });
+
+                const jobs = [];
+                const data = crewList.data();
+                const { awaitMembers } = data;
+                for (const awaitMember of awaitMembers) {
+                    const member = await context.DBManager.read({
+                        collection: USERS_COLLECTION,
+                        doc: awaitMember.userID,
+                    });
+
+                    const memberData = member.data();
+
+                    const index = memberData.crews.findIndex((cur) => cur.id === awaitMember.userID);
+                    memberData.splice(index, 1);
+                    jobs.push({
+                        method: 'update',
+                        collection: USERS_COLLECTION,
+                        doc: awaitMember.userID,
+                        data: memberData,
+                    });
+                }
+
+                const { members } = data;
+                for (const member of members) {
+                    const memberInfo = await context.DBManager.read({
+                        collection: USERS_COLLECTION,
+                        doc: member.userID,
+                    });
+
+                    const memberData = memberInfo.data();
+
+                    const index = memberData.crews.findIndex((cur) => cur.id === member.userID);
+                    memberData.crews.splice(index, 1);
+                    jobs.push({
+                        method: 'update',
+                        collection: USERS_COLLECTION,
+                        doc: member.userID,
+                        data: memberData,
+                    });
+                }
+
+                await context.DBManager.batch(
+                    {
+                        method: 'delete',
+                        collection: `${district}_crew`,
+                        doc: id,
+                    },
+                    {
+                        method: 'update',
+                        collection: USERS_COLLECTION,
+                        doc: userID,
+                        data: userData,
+                    },
+                    ...jobs,
+                );
+
+                return {
+                    code: 201,
+                    success: true,
+                    message: 'disassemble crew success',
+                };
+            } catch (error) {
+                console.error(`err: crews/resolver.js - disassembleCrew method ${error.MESSAGE ? error.MESSAGE : error}`);
 
                 return {
                     code: error.CODE ? error.CODE : 500,
