@@ -113,7 +113,7 @@ class DBManager {
                 break;
             }
             case 'delete':
-                batch.set(query);
+                batch.delete(query);
                 break;
             default:
                 console.log('err: uncorrect method');
